@@ -9,13 +9,14 @@ FROM clientes;
 
 --Qual cliente juntou mais pontos positivos em 2025-05?
 
-select sum(QtdePontos),
+select sum(QtdePontos) as total_pontos,
        IdCliente
 
 FROM transacoes
 
 WHERE DtCriacao >= '2025-05-01'
 AND DtCriacao < '2025-06-01'
+AND QtdePontos > 0
 
 GROUP BY IdCliente
 
@@ -45,7 +46,7 @@ LIMIT 1;
 
 --Quantos produtos são de rpg?
 
-SELECT count(IdProduto)
+SELECT count(*) AS total_produtos_rpg
 
 FROM produtos
 
@@ -57,8 +58,8 @@ WHERE DescCateogriaProduto ='rpg';
 
 SELECT DISTINCT substr(DtCriacao, 1,10) as dtPorDia,
                 round(avg(CASE
-                      WHEN QtdePontos > 0 THEN QtdePontos
-                      END),2) as media_pontos_positivos_dia
+                                 WHEN QtdePontos > 0 THEN QtdePontos
+                                 END),2) as media_pontos_positivos_dia
 
 FROM transacoes
 
@@ -69,13 +70,12 @@ GROUP BY dtPorDia;
 --Qual dia da semana Tem mais pedidos em 2025?
 
 SELECT 
-     count(IdTransacao),
-     strftime('%w', datetime(substr(DtCriacao, 1,19))) as DiaSemana
+     count(IdTransacao) as qtdeTransacoes,
+     strftime('%w', substr(DtCriacao, 1,10)) as DiaSemana
 
 FROM transacoes
 
-WHERE DtCriacao >= '2025-01-01'
-AND DtCriacao <= '2025-12-31'
+WHERE substr(DtCriacao, 1,4) = '2025'
 
 GROUP BY DiaSemana
 
@@ -87,7 +87,7 @@ LIMIT 1;
 --Qual o produto mais transacionado?
 
 SELECT  IdProduto,
-        sum(QtdeProduto)
+        sum(QtdeProduto) as total_produto
 FROM transacao_produto
 
 GROUP by IdProduto
@@ -100,7 +100,7 @@ LIMIT 1;
 -- Qual o produto com mais pontos transacionado?
 
 SELECT IdProduto,
-        sum(VlProduto)
+        sum(VlProduto) as total_valor
 
 FROM transacao_produto
 

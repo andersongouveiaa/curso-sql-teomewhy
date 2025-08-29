@@ -5,7 +5,7 @@ SELECT IdTransacao,
         QtdePontos,       
         (CASE 
             WHEN QtdePontos < 10 THEN 'baixo'
-            WHEN QtdePontos BETWEEN 11 and 499 THEN 'médio'
+            WHEN QtdePontos < 500 THEN 'médio'
             ELSE 'alto'
         END) as CategoriaPontos
 
